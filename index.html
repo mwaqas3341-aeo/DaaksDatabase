@@ -443,11 +443,17 @@
     border-bottom:1px dashed var(--border);
   }
 
-  /* ── Sheet cards ── */
+  /* ── Sheet cards ── 3 columns fixed for search results ── */
   .sheet-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns:repeat(3, 1fr);
     gap:14px;
+  }
+  @media (max-width:1100px){
+    .sheet-grid{grid-template-columns:repeat(2, 1fr);}
+  }
+  @media (max-width:700px){
+    .sheet-grid{grid-template-columns:1fr;}
   }
 
   .sheet-card{
@@ -644,7 +650,6 @@
     .month-list{max-height:none !important;}
     .month-item{display:inline-block; padding:6px 10px; margin:2px; border-radius:6px;}
     .month-item::before{display:none;}
-    .sheet-grid{grid-template-columns:1fr;}
   }
 
   @media (max-width:560px){
@@ -705,6 +710,7 @@ let DATA = null;
 let activeYear = null;
 let activeMonth = null;
 let searchQuery = '';
+let openYears = new Set(); // track which years are expanded
 
 /* ── Clock ── */
 function updateClock(){
@@ -785,9 +791,11 @@ function buildSidebar(){
   years.forEach(year => {
     const months = [...yearMap[year]].sort((a,b) => a - b);
     const yearSheets = ALL_SHEETS.filter(s => String(s.year) === year);
+    const isOpen = openYears.has(year);
+    const isActive = activeYear === year;
 
     const item = document.createElement('div');
-    item.className = 'year-item' + (activeYear === year ? ' active' : '');
+    item.className = 'year-item' + (isOpen ? ' open' : '') + (isActive ? ' active' : '');
     item.dataset.year = year;
 
     const header = document.createElement('div');
@@ -804,7 +812,7 @@ function buildSidebar(){
     months.forEach(m => {
       const monthSheets = ALL_SHEETS.filter(s => s.year == year && s.month == m);
       const mi = document.createElement('div');
-      mi.className = 'month-item' + (activeYear === year && activeMonth === String(m) ? ' active' : '');
+      mi.className = 'month-item' + (isActive && activeMonth === String(m) ? ' active' : '');
       mi.textContent = `${MONTH_NAMES[m-1]} (${monthSheets.length})`;
       mi.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -814,6 +822,8 @@ function buildSidebar(){
         } else {
           activeYear = year;
           activeMonth = String(m);
+          // keep year open when selecting a month
+          openYears.add(year);
         }
         buildSidebar();
         render();
@@ -822,9 +832,12 @@ function buildSidebar(){
     });
 
     header.addEventListener('click', () => {
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.year-item').forEach(y => y.classList.remove('open'));
-      if(!isOpen) item.classList.add('open');
+      if(openYears.has(year)){
+        openYears.delete(year);
+      } else {
+        openYears.add(year);
+      }
+      buildSidebar();
     });
 
     item.appendChild(header);
@@ -983,6 +996,7 @@ document.getElementById('clearFilters').addEventListener('click', () => {
   searchQuery = '';
   activeYear = null;
   activeMonth = null;
+  openYears.clear();
   document.getElementById('searchBox').value = '';
   buildSidebar();
   render();
