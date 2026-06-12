@@ -1,412 +1,578 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sheet Index — Drive Folder Dashboard</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<style>
-  :root{
-    --ink:#1c1f22;
-    --paper:#f6f4ee;
-    --line:#d8d3c5;
-    --accent:#b5562f;
-    --accent-soft:#f0e3da;
-    --mono: 'JetBrains Mono', 'Courier New', monospace;
-    --serif: 'Georgia', 'Iowan Old Style', serif;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    font-family:var(--serif);
-    background:var(--paper);
-    color:var(--ink);
-    line-height:1.5;
-  }
-  header{
-    border-bottom:2px solid var(--ink);
-    padding:28px 32px 20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    flex-wrap:wrap;
-    gap:12px;
-  }
-  header h1{
-    margin:0;
-    font-size:28px;
-    letter-spacing:0.5px;
-    font-weight:700;
-  }
-  header h1 span{
-    color:var(--accent);
-  }
-  .meta{
-    font-family:var(--mono);
-    font-size:12px;
-    color:#6b6358;
-    text-align:right;
-  }
-  .meta button{
-    font-family:var(--mono);
-    font-size:11px;
-    border:1px solid var(--ink);
-    background:transparent;
-    padding:5px 10px;
-    cursor:pointer;
-    margin-left:8px;
-    border-radius:2px;
-  }
-  .meta button:hover{ background:var(--ink); color:var(--paper); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous Daaks Record — Tehsil Karor</title>
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --surface: #161b22;
+            --border: #30363d;
+            --text: #c9d1d9;
+            --text-dim: #8b949e;
+            --accent-blue: #00c2ff;
+            --accent-green: #39ff14;
+            --accent-pink: #ff6ec7;
+            --shadow-glow-blue: 0 0 12px rgba(0, 194, 255, 0.5), 0 0 24px rgba(0, 194, 255, 0.2);
+            --shadow-glow-green: 0 0 12px rgba(57, 255, 20, 0.5), 0 0 24px rgba(57, 255, 20, 0.2);
+            --mono: 'JetBrains Mono', 'Courier New', monospace;
+            --serif: 'Georgia', 'Iowan Old Style', serif;
+        }
 
-  .controls{
-    padding:18px 32px;
-    border-bottom:1px solid var(--line);
-    display:flex;
-    gap:14px;
-    flex-wrap:wrap;
-    align-items:center;
-  }
-  .controls input[type="text"]{
-    flex:1;
-    min-width:200px;
-    padding:9px 12px;
-    border:1px solid var(--ink);
-    background:#fff;
-    font-family:var(--mono);
-    font-size:13px;
-    border-radius:2px;
-  }
-  .controls select{
-    padding:9px 10px;
-    border:1px solid var(--ink);
-    background:#fff;
-    font-family:var(--mono);
-    font-size:13px;
-    border-radius:2px;
-  }
-  .count-badge{
-    font-family:var(--mono);
-    font-size:12px;
-    color:#6b6358;
-  }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-  main{ padding:24px 32px 60px; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--serif);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-  .year-block{ margin-bottom:8px; }
-  .year-head{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:12px 0;
-    border-bottom:1px solid var(--line);
-    cursor:pointer;
-    user-select:none;
-  }
-  .year-head .num{
-    font-family:var(--mono);
-    font-size:32px;
-    font-weight:700;
-    color:var(--accent);
-    min-width:90px;
-  }
-  .year-head .info{ flex:1; font-family:var(--mono); font-size:12px; color:#6b6358; }
-  .year-head .toggle{ font-family:var(--mono); font-size:18px; transition:transform .2s; }
-  .year-head.collapsed .toggle{ transform:rotate(-90deg); }
-  .year-actions button, .month-actions button, .day-actions button{
-    font-family:var(--mono);
-    font-size:11px;
-    border:1px solid var(--ink);
-    background:#fff;
-    padding:4px 9px;
-    cursor:pointer;
-    border-radius:2px;
-    white-space:nowrap;
-  }
-  .year-actions button:hover, .month-actions button:hover, .day-actions button:hover{
-    background:var(--accent); color:#fff; border-color:var(--accent);
-  }
+        /* header */
+        .top-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
 
-  .year-body{ padding-left:12px; }
-  .year-body.collapsed{ display:none; }
+        .title-section h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            color: #fff;
+            text-shadow: 0 0 8px rgba(0, 194, 255, 0.3);
+        }
 
-  .month-block{ border-left:2px solid var(--line); margin:10px 0 10px 12px; padding-left:18px; }
-  .month-head{
-    display:flex; align-items:center; gap:12px; padding:8px 0; cursor:pointer; user-select:none;
-  }
-  .month-head .name{ font-weight:700; font-size:16px; min-width:140px; }
-  .month-head .info{ flex:1; font-family:var(--mono); font-size:11px; color:#6b6358; }
-  .month-head .toggle{ font-family:var(--mono); font-size:14px; transition:transform .2s; }
-  .month-head.collapsed .toggle{ transform:rotate(-90deg); }
-  .month-body.collapsed{ display:none; }
+        .title-section .sub {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+            margin-top: 4px;
+        }
 
-  .day-block{ border-left:1px dashed var(--line); margin:6px 0 6px 6px; padding:6px 0 6px 16px; }
-  .day-head{
-    display:flex; align-items:center; gap:12px; padding:4px 0;
-  }
-  .day-head .name{ font-family:var(--mono); font-size:12px; color:#6b6358; min-width:90px; }
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--mono);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
 
-  table{ width:100%; border-collapse:collapse; margin:4px 0 6px; }
-  td{ padding:6px 8px; font-size:13.5px; border-bottom:1px solid #ece8dd; vertical-align:middle; }
-  td.dl{ width:90px; text-align:right; }
-  td.path{ color:#9a9183; font-family:var(--mono); font-size:11px; }
-  .sheet-name{ font-weight:600; }
-  .sheet-name a{ color:var(--ink); text-decoration:none; border-bottom:1px solid var(--accent); }
-  .sheet-name a:hover{ color:var(--accent); }
-  .dl-link{
-    font-family:var(--mono); font-size:11px; color:var(--accent); text-decoration:none;
-    border:1px solid var(--accent); padding:3px 8px; border-radius:2px; white-space:nowrap;
-  }
-  .dl-link:hover{ background:var(--accent); color:#fff; }
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 12px var(--accent-green);
+            animation: pulse 1.5s infinite;
+            display: inline-block;
+            margin-right: 6px;
+        }
 
-  .empty{
-    text-align:center; padding:80px 20px; color:#9a9183; font-family:var(--mono); font-size:13px;
-  }
-  .error-box{
-    margin:24px 32px; padding:16px; border:1px solid var(--accent); background:var(--accent-soft);
-    font-family:var(--mono); font-size:13px; border-radius:4px;
-  }
-</style>
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.2);
+            }
+        }
+
+        .total-sheets-badge {
+            background: var(--surface);
+            border: 1px solid var(--accent-blue);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            box-shadow: var(--shadow-glow-blue);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* main layout */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 20px 12px;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar h3 {
+            font-family: var(--mono);
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-left: 8px;
+        }
+
+        .year-list {
+            list-style: none;
+        }
+
+        .year-item {
+            padding: 10px 16px;
+            margin: 4px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--mono);
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            color: var(--text);
+        }
+
+        .year-item:hover {
+            background: #1c2330;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 8px rgba(0, 194, 255, 0.3);
+        }
+
+        .year-item.active {
+            background: #0d2b3e;
+            border-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: var(--shadow-glow-blue);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 24px 28px;
+            overflow-y: auto;
+        }
+
+        .search-container {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 0.95rem;
+            color: #fff;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(0, 194, 255, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .month-block {
+            margin-bottom: 18px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            overflow: hidden;
+        }
+
+        .month-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            background: #1c2128;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .month-head:hover {
+            background: #242c36;
+        }
+
+        .month-head .month-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .month-head .sheet-count {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            background: #0f1a0f;
+            padding: 4px 10px;
+            border-radius: 12px;
+            box-shadow: 0 0 8px rgba(57, 255, 20, 0.3);
+        }
+
+        .month-head .toggle-icon {
+            font-size: 1.4rem;
+            color: var(--accent-blue);
+            transition: transform 0.2s;
+        }
+
+        .month-head.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .month-body {
+            padding: 8px 0;
+            transition: max-height 0.3s ease;
+        }
+
+        .month-body.collapsed {
+            display: none;
+        }
+
+        .sheet-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 18px;
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        .sheet-row:last-child {
+            border-bottom: none;
+        }
+
+        .sheet-row:hover {
+            background: #1b2129;
+        }
+
+        .sheet-info {
+            flex: 1;
+        }
+
+        .sheet-name {
+            font-weight: 600;
+            color: #e6edf3;
+            font-size: 1rem;
+        }
+
+        .sheet-path {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .sheet-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: 16px;
+        }
+
+        .neon-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-open {
+            background: #0a1a2b;
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 8px rgba(0, 194, 255, 0.2);
+        }
+
+        .btn-open:hover {
+            background: var(--accent-blue);
+            color: #000;
+            box-shadow: var(--shadow-glow-blue);
+            transform: translateY(-1px);
+        }
+
+        .btn-download {
+            background: #0f1a0f;
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 8px rgba(57, 255, 20, 0.2);
+        }
+
+        .btn-download:hover {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: var(--shadow-glow-green);
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 1rem;
+        }
+
+        .error-box {
+            background: #2d0f0f;
+            border: 1px solid #ff5555;
+            color: #ffaaaa;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: var(--mono);
+            margin: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 12px;
+            }
+            .year-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .year-item {
+                padding: 8px 14px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header class="top-bar">
+        <div class="title-section">
+            <h1>Previous Daaks Record of Tehsil Karor</h1>
+            <div class="sub">( By Muhammad Waqas Assistant Education Officer Fateh Pur )</div>
+        </div>
+        <div class="stats">
+            <span style="display:flex;align-items:center;">
+                <span class="live-dot"></span> Live
+            </span>
+            <div class="total-sheets-badge" id="totalSheetsBadge">📄 0 sheets</div>
+        </div>
+    </header>
 
-<header>
-  <h1>Sheet<span>Index</span></h1>
-  <div class="meta">
-    <div id="folderName">loading…</div>
-    <div id="generatedAt"></div>
-    <button id="refreshBtn">↻ refresh data.json</button>
-  </div>
-</header>
+    <div class="app-container">
+        <aside class="sidebar">
+            <h3>📅 Years</h3>
+            <ul class="year-list" id="yearList"></ul>
+        </aside>
+        <main class="main-content" id="mainContent">
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchBox" placeholder="🔍 Search sheets by name…" />
+            </div>
+            <div id="displayArea">
+                <div class="empty-state">Select a year from the sidebar to view months and sheets.</div>
+            </div>
+        </main>
+    </div>
 
-<div class="controls">
-  <input type="text" id="searchBox" placeholder="search by name…">
-  <select id="yearFilter"><option value="">All years</option></select>
-  <select id="monthFilter"><option value="">All months</option></select>
-  <span class="count-badge" id="countBadge"></span>
-</div>
+    <script>
+        const MONTH_NAMES = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
 
-<main id="main">
-  <div class="empty">Loading data.json…</div>
-</main>
+        let ALL_SHEETS = [];
+        let selectedYear = null;
 
-<script>
-const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        // Fetch data.json
+        async function loadData() {
+            try {
+                const res = await fetch('data.json', { cache: 'no-store' });
+                if (!res.ok) throw new Error('data.json not found (HTTP ' + res.status + ')');
+                const data = await res.json();
+                ALL_SHEETS = data.sheets || [];
+                document.getElementById('totalSheetsBadge').innerHTML =
+                    `📄 ${ALL_SHEETS.length} sheet${ALL_SHEETS.length !== 1 ? 's' : ''}`;
+                buildYearSidebar();
+                // If a year was previously selected, refresh display
+                if (selectedYear) {
+                    renderMonthsForYear(selectedYear);
+                }
+            } catch (e) {
+                document.getElementById('displayArea').innerHTML =
+                    `<div class="error-box">Could not load <code>data.json</code>.<br><br>
+                     Error: ${e.message}</div>`;
+            }
+        }
 
-let ALL_SHEETS = [];
-let DATA = null;
+        function buildYearSidebar() {
+            const years = [...new Set(ALL_SHEETS.map(s => s.year))].sort((a, b) => b - a);
+            const ul = document.getElementById('yearList');
+            ul.innerHTML = '';
+            years.forEach(y => {
+                const li = document.createElement('li');
+                li.className = 'year-item' + (selectedYear === y ? ' active' : '');
+                li.textContent = y;
+                li.addEventListener('click', () => {
+                    selectedYear = y;
+                    // update active class
+                    document.querySelectorAll('.year-item').forEach(el => el.classList.remove('active'));
+                    li.classList.add('active');
+                    renderMonthsForYear(y);
+                    document.getElementById('searchBox').value = '';
+                });
+                ul.appendChild(li);
+            });
+        }
 
-async function loadData(){
-  try{
-    const res = await fetch('data.json', {cache:'no-store'});
-    if(!res.ok) throw new Error('data.json not found (HTTP '+res.status+')');
-    DATA = await res.json();
-    ALL_SHEETS = DATA.sheets || [];
-    document.getElementById('folderName').textContent = DATA.rootFolderName || '';
-    document.getElementById('generatedAt').textContent = 'updated: ' + new Date(DATA.generatedAt).toLocaleString();
-    populateFilters();
-    render();
-  } catch(e){
-    document.getElementById('main').innerHTML =
-      `<div class="error-box">Could not load <code>data.json</code>.<br><br>
-       This file is generated by the Apps Script backend and pushed to this repo.
-       Make sure data.json exists at the repo root and the Apps Script trigger has run at least once.<br><br>
-       Error: ${e.message}</div>`;
-  }
-}
+        function getFilteredForYear(year) {
+            const query = document.getElementById('searchBox').value.trim().toLowerCase();
+            return ALL_SHEETS.filter(s => {
+                if (s.year !== year) return false;
+                if (query && !s.name.toLowerCase().includes(query)) return false;
+                return true;
+            });
+        }
 
-function populateFilters(){
-  const years = [...new Set(ALL_SHEETS.map(s=>s.year))].sort((a,b)=>b-a);
-  const yearSel = document.getElementById('yearFilter');
-  years.forEach(y=>{
-    const opt = document.createElement('option');
-    opt.value = y; opt.textContent = y;
-    yearSel.appendChild(opt);
-  });
-  const monthSel = document.getElementById('monthFilter');
-  MONTH_NAMES.forEach((m,i)=>{
-    const opt = document.createElement('option');
-    opt.value = i+1; opt.textContent = m;
-    monthSel.appendChild(opt);
-  });
-}
+        function groupByMonth(sheets) {
+            const map = {};
+            sheets.forEach(s => {
+                if (!map[s.month]) map[s.month] = [];
+                map[s.month].push(s);
+            });
+            // sort months numerically (ascending)
+            const sortedMonths = Object.keys(map).map(Number).sort((a, b) => a - b);
+            // alphabetically sort sheets within each month
+            for (let m in map) {
+                map[m].sort((a, b) => a.name.localeCompare(b.name));
+            }
+            return { map, sortedMonths };
+        }
 
-function getFiltered(){
-  const q = document.getElementById('searchBox').value.trim().toLowerCase();
-  const yf = document.getElementById('yearFilter').value;
-  const mf = document.getElementById('monthFilter').value;
-  return ALL_SHEETS.filter(s=>{
-    if(q && !s.name.toLowerCase().includes(q)) return false;
-    if(yf && String(s.year) !== yf) return false;
-    if(mf && String(s.month) !== mf) return false;
-    return true;
-  });
-}
+        function exportUrl(id) {
+            return `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`;
+        }
 
-function groupData(sheets){
-  const byYear = {};
-  sheets.forEach(s=>{
-    byYear[s.year] = byYear[s.year] || {};
-    byYear[s.year][s.month] = byYear[s.year][s.month] || {};
-    byYear[s.year][s.month][s.day] = byYear[s.year][s.month][s.day] || [];
-    byYear[s.year][s.month][s.day].push(s);
-  });
-  return byYear;
-}
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
 
-function exportUrl(id){
-  return `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`;
-}
+        function renderMonthsForYear(year) {
+            const sheets = getFilteredForYear(year);
+            const displayArea = document.getElementById('displayArea');
+            if (sheets.length === 0) {
+                displayArea.innerHTML =
+                    `<div class="empty-state">No sheets found for ${year}${document.getElementById('searchBox').value ? ' matching search' : ''}.</div>`;
+                return;
+            }
 
-async function downloadZip(sheets, zipName){
-  const zip = new JSZip();
-  const btn = event.target;
-  const orig = btn.textContent;
-  btn.textContent = '...';
-  btn.disabled = true;
-  try{
-    await Promise.all(sheets.map(async s=>{
-      try{
-        const resp = await fetch(exportUrl(s.id));
-        const blob = await resp.blob();
-        const safeName = s.name.replace(/[\\/:*?"<>|]/g,'_');
-        zip.file(`${safeName}.xlsx`, blob);
-      }catch(e){ console.warn('Failed to fetch', s.name, e); }
-    }));
-    const content = await zip.generateAsync({type:'blob'});
-    const url = URL.createObjectURL(content);
-    const a = document.createElement('a');
-    a.href = url; a.download = `${zipName}.zip`;
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
-  } finally {
-    btn.textContent = orig;
-    btn.disabled = false;
-  }
-}
+            const { map, sortedMonths } = groupByMonth(sheets);
+            let html = '';
+            sortedMonths.forEach(month => {
+                const monthSheets = map[month];
+                const monthName = MONTH_NAMES[month - 1];
+                html += `
+                <div class="month-block">
+                    <div class="month-head" data-month="${month}">
+                        <div class="month-name">
+                            <span class="toggle-icon">▾</span> ${monthName}
+                        </div>
+                        <span class="sheet-count">${monthSheets.length} sheet${monthSheets.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="month-body">
+                        ${monthSheets.map(s => `
+                            <div class="sheet-row">
+                                <div class="sheet-info">
+                                    <div class="sheet-name">${escapeHtml(s.name)}</div>
+                                    <div class="sheet-path">${escapeHtml(s.path)}</div>
+                                </div>
+                                <div class="sheet-actions">
+                                    <a href="${s.url}" target="_blank" class="neon-btn btn-open">📂 Open</a>
+                                    <a href="${exportUrl(s.id)}" download class="neon-btn btn-download">⬇ Download</a>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            });
+            displayArea.innerHTML = html;
 
-function render(){
-  const sheets = getFiltered();
-  document.getElementById('countBadge').textContent = `${sheets.length} sheet${sheets.length===1?'':'s'}`;
-  const main = document.getElementById('main');
-  main.innerHTML = '';
+            // attach collapse toggle
+            document.querySelectorAll('.month-head').forEach(head => {
+                head.addEventListener('click', function() {
+                    this.classList.toggle('collapsed');
+                    const body = this.nextElementSibling;
+                    if (body) body.classList.toggle('collapsed');
+                });
+            });
+        }
 
-  if(sheets.length === 0){
-    main.innerHTML = '<div class="empty">No sheets match.</div>';
-    return;
-  }
-
-  const byYear = groupData(sheets);
-  const years = Object.keys(byYear).sort((a,b)=>b-a);
-
-  years.forEach(year=>{
-    const yearSheets = Object.values(byYear[year]).flatMap(m=>Object.values(m).flat());
-    const yearBlock = document.createElement('div');
-    yearBlock.className = 'year-block';
-
-    const yearHead = document.createElement('div');
-    yearHead.className = 'year-head';
-    yearHead.innerHTML = `
-      <span class="toggle">▾</span>
-      <span class="num">${year}</span>
-      <span class="info">${yearSheets.length} sheet${yearSheets.length===1?'':'s'}</span>
-      <span class="year-actions"><button>download all ${year}</button></span>
-    `;
-    const yearBody = document.createElement('div');
-    yearBody.className = 'year-body';
-
-    yearHead.querySelector('.toggle').parentElement.addEventListener('click', (e)=>{
-      if(e.target.closest('button')) return;
-      yearHead.classList.toggle('collapsed');
-      yearBody.classList.toggle('collapsed');
-    });
-    yearHead.querySelector('.year-actions button').addEventListener('click', (e)=>{
-      e.stopPropagation();
-      downloadZip(yearSheets, `sheets_${year}`);
-    });
-
-    const months = Object.keys(byYear[year]).sort((a,b)=>b-a);
-    months.forEach(month=>{
-      const monthSheets = Object.values(byYear[year][month]).flat();
-      const monthBlock = document.createElement('div');
-      monthBlock.className = 'month-block';
-
-      const monthHead = document.createElement('div');
-      monthHead.className = 'month-head';
-      monthHead.innerHTML = `
-        <span class="toggle">▾</span>
-        <span class="name">${MONTH_NAMES[month-1]}</span>
-        <span class="info">${monthSheets.length} sheet${monthSheets.length===1?'':'s'}</span>
-        <span class="month-actions"><button>download all</button></span>
-      `;
-      const monthBody = document.createElement('div');
-      monthBody.className = 'month-body';
-
-      monthHead.addEventListener('click', (e)=>{
-        if(e.target.closest('button')) return;
-        monthHead.classList.toggle('collapsed');
-        monthBody.classList.toggle('collapsed');
-      });
-      monthHead.querySelector('.month-actions button').addEventListener('click', (e)=>{
-        e.stopPropagation();
-        downloadZip(monthSheets, `sheets_${year}_${MONTH_NAMES[month-1]}`);
-      });
-
-      const days = Object.keys(byYear[year][month]).sort((a,b)=>b-a);
-      days.forEach(day=>{
-        const daySheets = byYear[year][month][day];
-        const dayBlock = document.createElement('div');
-        dayBlock.className = 'day-block';
-
-        const dayHead = document.createElement('div');
-        dayHead.className = 'day-head';
-        const dateLabel = `${MONTH_NAMES[month-1]} ${day}, ${year}`;
-        dayHead.innerHTML = `
-          <span class="name">${dateLabel}</span>
-          <span class="day-actions"><button>download all</button></span>
-        `;
-        dayHead.querySelector('.day-actions button').addEventListener('click', ()=>{
-          downloadZip(daySheets, `sheets_${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`);
+        // Search handler
+        document.getElementById('searchBox').addEventListener('input', function() {
+            if (selectedYear) {
+                renderMonthsForYear(selectedYear);
+            }
         });
 
-        const table = document.createElement('table');
-        daySheets.forEach(s=>{
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td class="sheet-name"><a href="${s.url}" target="_blank">${escapeHtml(s.name)}</a><br><span class="path">${escapeHtml(s.path)}</span></td>
-            <td class="dl"><a class="dl-link" href="${exportUrl(s.id)}">.xlsx</a></td>
-          `;
-          table.appendChild(tr);
-        });
+        // Initial load
+        loadData();
 
-        dayBlock.appendChild(dayHead);
-        dayBlock.appendChild(table);
-        monthBody.appendChild(dayBlock);
-      });
+        // Live refresh every 5 minutes
+        setInterval(() => {
+            loadData();
+        }, 300000);
 
-      monthBlock.appendChild(monthHead);
-      monthBlock.appendChild(monthBody);
-      yearBody.appendChild(monthBlock);
-    });
-
-    yearBlock.appendChild(yearHead);
-    yearBlock.appendChild(yearBody);
-    main.appendChild(yearBlock);
-  });
-}
-
-function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-document.getElementById('searchBox').addEventListener('input', render);
-document.getElementById('yearFilter').addEventListener('change', render);
-document.getElementById('monthFilter').addEventListener('change', render);
-document.getElementById('refreshBtn').addEventListener('click', loadData);
-
-loadData();
-</script>
+        // Simulate live feeling: update time
+        function updateLiveTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const liveElem = document.querySelector('.stats span:first-child');
+            if (liveElem) liveElem.innerHTML = `<span class="live-dot"></span> Live • ${timeStr}`;
+        }
+        setInterval(updateLiveTime, 1000);
+        updateLiveTime();
+    </script>
 </body>
 </html>
