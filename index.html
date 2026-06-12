@@ -1,578 +1,997 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Previous Daaks Record — Tehsil Karor</title>
-    <style>
-        :root {
-            --bg: #0b0e14;
-            --surface: #161b22;
-            --border: #30363d;
-            --text: #c9d1d9;
-            --text-dim: #8b949e;
-            --accent-blue: #00c2ff;
-            --accent-green: #39ff14;
-            --accent-pink: #ff6ec7;
-            --shadow-glow-blue: 0 0 12px rgba(0, 194, 255, 0.5), 0 0 24px rgba(0, 194, 255, 0.2);
-            --shadow-glow-green: 0 0 12px rgba(57, 255, 20, 0.5), 0 0 24px rgba(57, 255, 20, 0.2);
-            --mono: 'JetBrains Mono', 'Courier New', monospace;
-            --serif: 'Georgia', 'Iowan Old Style', serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Previous Daaks Record — Tehsil Karor</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  :root{
+    --bg-deep: #0a0e12;
+    --bg-card: #111820;
+    --bg-hover: #1a2330;
+    --border: #1e2a38;
+    --border-light: #2a3a50;
+    --text-main: #e0e6ed;
+    --text-dim: #7a8fa3;
+    --text-muted: #4a5d70;
+    --neon: #39ff14;
+    --neon-dim: #2dd30f;
+    --neon-glow: rgba(57,255,20,0.25);
+    --accent-2: #00d4ff;
+    --danger: #ff4757;
+    --warning: #ffa502;
+    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--serif);
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+  *{box-sizing:border-box; margin:0; padding:0;}
 
-        /* header */
-        .top-bar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 18px 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-        }
+  html{scroll-behavior:smooth;}
 
-        .title-section h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            letter-spacing: 0.4px;
-            color: #fff;
-            text-shadow: 0 0 8px rgba(0, 194, 255, 0.3);
-        }
+  body{
+    font-family:var(--font-main);
+    background:var(--bg-deep);
+    color:var(--text-main);
+    line-height:1.55;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
 
-        .title-section .sub {
-            font-family: var(--mono);
-            font-size: 0.85rem;
-            color: var(--accent-blue);
-            margin-top: 4px;
-        }
+  /* ── Animated background grid ── */
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(57,255,20,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57,255,20,0.03) 1px, transparent 1px);
+    background-size:50px 50px;
+    pointer-events:none;
+    z-index:0;
+  }
 
-        .stats {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-family: var(--mono);
-            color: var(--text-dim);
-            font-size: 0.9rem;
-        }
+  /* ── Header ── */
+  .top-bar{
+    position:relative;
+    z-index:10;
+    background:linear-gradient(180deg, rgba(10,14,18,0.98) 0%, rgba(10,14,18,0.9) 100%);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:22px 28px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:16px;
+  }
 
-        .live-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--accent-green);
-            box-shadow: 0 0 12px var(--accent-green);
-            animation: pulse 1.5s infinite;
-            display: inline-block;
-            margin-right: 6px;
-        }
+  .brand{flex:1; min-width:260px;}
+  .brand h1{
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:-0.5px;
+    background:linear-gradient(135deg, #fff 0%, var(--neon) 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:4px;
+  }
+  .brand .subtitle{
+    font-size:13.5px;
+    color:var(--text-dim);
+    font-weight:500;
+    letter-spacing:0.3px;
+  }
+  .brand .subtitle strong{
+    color:var(--neon);
+    font-weight:600;
+  }
 
-        @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: scale(1.2);
-            }
-        }
+  .header-right{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:10px;
+  }
 
-        .total-sheets-badge {
-            background: var(--surface);
-            border: 1px solid var(--accent-blue);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            color: var(--accent-blue);
-            box-shadow: var(--shadow-glow-blue);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+  .live-clock{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--neon);
+    text-shadow:0 0 8px var(--neon-glow);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .live-clock::before{
+    content:'';
+    width:8px; height:8px;
+    background:var(--neon);
+    border-radius:50%;
+    box-shadow:0 0 10px var(--neon);
+    animation:pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot{
+    0%,100%{opacity:1; transform:scale(1);}
+    50%{opacity:0.5; transform:scale(0.85);}
+  }
 
-        /* main layout */
-        .app-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
+  .total-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--bg-card);
+    border:1px solid var(--border-light);
+    padding:6px 14px;
+    border-radius:20px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--text-dim);
+    transition:all 0.3s ease;
+  }
+  .total-badge .num{
+    color:var(--neon);
+    font-weight:700;
+    font-size:15px;
+    text-shadow:0 0 6px var(--neon-glow);
+    min-width:24px;
+    text-align:center;
+  }
+  .total-badge:hover{
+    border-color:var(--neon);
+    box-shadow:0 0 12px var(--neon-glow);
+  }
 
-        .sidebar {
-            width: 260px;
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 20px 12px;
-            overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
-        }
+  /* ── Controls bar ── */
+  .controls-bar{
+    position:relative;
+    z-index:10;
+    padding:14px 28px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+    background:rgba(10,14,18,0.7);
+  }
 
-        .sidebar h3 {
-            font-family: var(--mono);
-            font-size: 0.9rem;
-            color: var(--accent-blue);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding-left: 8px;
-        }
+  .search-wrap{
+    position:relative;
+    flex:1;
+    min-width:220px;
+    max-width:420px;
+  }
+  .search-wrap input{
+    width:100%;
+    padding:10px 14px 10px 38px;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--text-main);
+    font-family:var(--font-main);
+    font-size:13.5px;
+    outline:none;
+    transition:all 0.25s ease;
+  }
+  .search-wrap input:focus{
+    border-color:var(--neon);
+    box-shadow:0 0 0 3px var(--neon-glow), 0 0 20px var(--neon-glow);
+  }
+  .search-wrap::before{
+    content:'🔍';
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:13px;
+    opacity:0.6;
+  }
 
-        .year-list {
-            list-style: none;
-        }
+  .ctrl-btn{
+    padding:9px 16px;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--text-dim);
+    font-family:var(--font-mono);
+    font-size:12px;
+    cursor:pointer;
+    transition:all 0.25s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .ctrl-btn:hover{
+    border-color:var(--neon);
+    color:var(--neon);
+    box-shadow:0 0 12px var(--neon-glow);
+    transform:translateY(-1px);
+  }
+  .ctrl-btn:active{transform:translateY(0);}
 
-        .year-item {
-            padding: 10px 16px;
-            margin: 4px 0;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: var(--mono);
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-            color: var(--text);
-        }
+  /* ── Layout: main + sidebar ── */
+  .layout{
+    display:flex;
+    gap:0;
+    min-height:calc(100vh - 160px);
+    position:relative;
+    z-index:5;
+  }
 
-        .year-item:hover {
-            background: #1c2330;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 8px rgba(0, 194, 255, 0.3);
-        }
+  .main-area{
+    flex:1;
+    padding:24px 28px 60px;
+    min-width:0;
+  }
 
-        .year-item.active {
-            background: #0d2b3e;
-            border-color: var(--accent-blue);
-            color: #fff;
-            box-shadow: var(--shadow-glow-blue);
-        }
+  /* ── Right sidebar ── */
+  .sidebar{
+    width:220px;
+    background:var(--bg-card);
+    border-left:1px solid var(--border);
+    padding:20px 16px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+    scrollbar-width:thin;
+    scrollbar-color:var(--border) transparent;
+  }
+  .sidebar::-webkit-scrollbar{width:5px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
 
-        .main-content {
-            flex: 1;
-            padding: 24px 28px;
-            overflow-y: auto;
-        }
+  .sidebar-title{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--text-muted);
+    margin-bottom:16px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--border);
+  }
 
-        .search-container {
-            margin-bottom: 24px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
+  .year-item{
+    margin-bottom:6px;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid transparent;
+    transition:all 0.2s ease;
+  }
+  .year-item:hover{border-color:var(--border-light);}
+  .year-item.active{border-color:var(--neon); background:rgba(57,255,20,0.05);}
 
-        .search-input {
-            flex: 1;
-            padding: 12px 18px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: var(--mono);
-            font-size: 0.95rem;
-            color: #fff;
-            outline: none;
-            transition: border 0.2s;
-        }
+  .year-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 12px;
+    cursor:pointer;
+    user-select:none;
+    font-family:var(--font-mono);
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-main);
+    transition:color 0.2s;
+  }
+  .year-item.active .year-header{color:var(--neon);}
+  .year-header:hover{color:var(--neon);}
 
-        .search-input:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 10px rgba(0, 194, 255, 0.2);
-        }
+  .year-chevron{
+    font-size:10px;
+    color:var(--text-muted);
+    transition:transform 0.25s ease;
+  }
+  .year-item.open .year-chevron{transform:rotate(90deg);}
+  .year-item.active .year-chevron{color:var(--neon);}
 
-        .search-input::placeholder {
-            color: var(--text-dim);
-        }
+  .year-count{
+    font-size:10px;
+    color:var(--text-muted);
+    background:var(--bg-deep);
+    padding:2px 7px;
+    border-radius:10px;
+    margin-left:auto;
+    margin-right:8px;
+  }
 
-        .month-block {
-            margin-bottom: 18px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--surface);
-            overflow: hidden;
-        }
+  .month-list{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.35s ease;
+  }
+  .year-item.open .month-list{max-height:500px;}
 
-        .month-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 18px;
-            background: #1c2128;
-            cursor: pointer;
-            user-select: none;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.2s;
-        }
+  .month-item{
+    padding:7px 12px 7px 28px;
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--text-dim);
+    cursor:pointer;
+    border-radius:0 6px 6px 0;
+    margin:2px 0;
+    transition:all 0.2s ease;
+    position:relative;
+  }
+  .month-item::before{
+    content:'';
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    width:4px;
+    height:4px;
+    background:var(--text-muted);
+    border-radius:50%;
+    transition:all 0.2s;
+  }
+  .month-item:hover{
+    color:var(--neon);
+    background:rgba(57,255,20,0.06);
+  }
+  .month-item:hover::before{
+    background:var(--neon);
+    box-shadow:0 0 6px var(--neon);
+  }
+  .month-item.active{
+    color:var(--neon);
+    background:rgba(57,255,20,0.08);
+  }
+  .month-item.active::before{
+    background:var(--neon);
+    box-shadow:0 0 6px var(--neon);
+  }
 
-        .month-head:hover {
-            background: #242c36;
-        }
+  /* ── Content blocks ── */
+  .content-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .content-title{
+    font-size:18px;
+    font-weight:700;
+    color:var(--text-main);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .content-title .accent-line{
+    display:inline-block;
+    width:4px;
+    height:22px;
+    background:var(--neon);
+    border-radius:2px;
+    box-shadow:0 0 8px var(--neon-glow);
+  }
 
-        .month-head .month-name {
-            font-weight: 700;
-            font-size: 1.3rem;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+  .year-section{
+    margin-bottom:32px;
+    animation:fadeInUp 0.5s ease both;
+  }
+  @keyframes fadeInUp{
+    from{opacity:0; transform:translateY(16px);}
+    to{opacity:1; transform:translateY(0);}
+  }
 
-        .month-head .sheet-count {
-            font-family: var(--mono);
-            font-size: 0.8rem;
-            color: var(--accent-green);
-            background: #0f1a0f;
-            padding: 4px 10px;
-            border-radius: 12px;
-            box-shadow: 0 0 8px rgba(57, 255, 20, 0.3);
-        }
+  .year-label{
+    font-size:28px;
+    font-weight:800;
+    color:var(--text-main);
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-family:var(--font-mono);
+  }
+  .year-label .glow-num{
+    color:var(--neon);
+    text-shadow:0 0 12px var(--neon-glow);
+  }
+  .year-label .count-pill{
+    font-size:11px;
+    font-weight:600;
+    color:var(--text-dim);
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    padding:3px 10px;
+    border-radius:12px;
+  }
 
-        .month-head .toggle-icon {
-            font-size: 1.4rem;
-            color: var(--accent-blue);
-            transition: transform 0.2s;
-        }
+  .month-section{
+    margin-bottom:24px;
+    padding-left:16px;
+    border-left:2px solid var(--border);
+  }
 
-        .month-head.collapsed .toggle-icon {
-            transform: rotate(-90deg);
-        }
+  .month-label{
+    font-size:15px;
+    font-weight:700;
+    color:var(--text-dim);
+    margin-bottom:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .month-label::before{
+    content:'';
+    width:6px; height:6px;
+    background:var(--neon);
+    border-radius:50%;
+    box-shadow:0 0 8px var(--neon);
+  }
 
-        .month-body {
-            padding: 8px 0;
-            transition: max-height 0.3s ease;
-        }
+  .day-section{
+    margin-bottom:16px;
+    padding-left:14px;
+  }
 
-        .month-body.collapsed {
-            display: none;
-        }
+  .day-label{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--text-muted);
+    margin-bottom:8px;
+    padding-bottom:6px;
+    border-bottom:1px dashed var(--border);
+  }
 
-        .sheet-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 18px;
-            border-bottom: 1px solid #21262d;
-            transition: background 0.15s;
-        }
+  /* ── Sheet cards ── */
+  .sheet-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:14px;
+  }
 
-        .sheet-row:last-child {
-            border-bottom: none;
-        }
+  .sheet-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px;
+    transition:all 0.3s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .sheet-card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:2px;
+    background:linear-gradient(90deg, var(--neon), transparent);
+    opacity:0;
+    transition:opacity 0.3s;
+  }
+  .sheet-card:hover{
+    border-color:var(--border-light);
+    transform:translateY(-3px);
+    box-shadow:0 8px 30px rgba(0,0,0,0.4), 0 0 20px var(--neon-glow);
+  }
+  .sheet-card:hover::before{opacity:1;}
 
-        .sheet-row:hover {
-            background: #1b2129;
-        }
+  .sheet-card .sheet-icon{
+    width:36px; height:36px;
+    background:linear-gradient(135deg, rgba(57,255,20,0.15), rgba(0,212,255,0.1));
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    margin-bottom:10px;
+    border:1px solid rgba(57,255,20,0.2);
+  }
 
-        .sheet-info {
-            flex: 1;
-        }
+  .sheet-card .sheet-name{
+    font-size:14px;
+    font-weight:600;
+    color:var(--text-main);
+    margin-bottom:4px;
+    line-height:1.4;
+    word-break:break-word;
+  }
+  .sheet-card .sheet-path{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    color:var(--text-muted);
+    margin-bottom:14px;
+    line-height:1.4;
+  }
 
-        .sheet-name {
-            font-weight: 600;
-            color: #e6edf3;
-            font-size: 1rem;
-        }
+  .sheet-actions{
+    display:flex;
+    gap:8px;
+  }
 
-        .sheet-path {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            margin-top: 2px;
-        }
+  .btn-neon{
+    flex:1;
+    padding:8px 12px;
+    border-radius:8px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    text-align:center;
+    text-decoration:none;
+    cursor:pointer;
+    border:none;
+    transition:all 0.25s ease;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+  }
 
-        .sheet-actions {
-            display: flex;
-            gap: 10px;
-            margin-left: 16px;
-        }
+  .btn-open{
+    background:rgba(0,212,255,0.08);
+    color:var(--accent-2);
+    border:1px solid rgba(0,212,255,0.25);
+  }
+  .btn-open:hover{
+    background:rgba(0,212,255,0.15);
+    box-shadow:0 0 12px rgba(0,212,255,0.2);
+    transform:translateY(-1px);
+  }
 
-        .neon-btn {
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-family: var(--mono);
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+  .btn-dl{
+    background:rgba(57,255,20,0.08);
+    color:var(--neon);
+    border:1px solid rgba(57,255,20,0.3);
+  }
+  .btn-dl:hover{
+    background:rgba(57,255,20,0.18);
+    box-shadow:0 0 16px var(--neon-glow);
+    transform:translateY(-1px);
+  }
 
-        .btn-open {
-            background: #0a1a2b;
-            color: var(--accent-blue);
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 8px rgba(0, 194, 255, 0.2);
-        }
+  .btn-dl:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+    transform:none;
+  }
 
-        .btn-open:hover {
-            background: var(--accent-blue);
-            color: #000;
-            box-shadow: var(--shadow-glow-blue);
-            transform: translateY(-1px);
-        }
+  /* ── Loading spinner ── */
+  .spinner-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:100px 20px;
+    gap:20px;
+  }
+  .spinner{
+    width:48px; height:48px;
+    border:3px solid var(--border);
+    border-top-color:var(--neon);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    box-shadow:0 0 20px var(--neon-glow);
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .spinner-text{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--text-dim);
+    animation:pulse-text 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-text{
+    0%,100%{opacity:0.6;}
+    50%{opacity:1;}
+  }
 
-        .btn-download {
-            background: #0f1a0f;
-            color: var(--accent-green);
-            border-color: var(--accent-green);
-            box-shadow: 0 0 8px rgba(57, 255, 20, 0.2);
-        }
+  /* ── Empty / Error ── */
+  .empty-state{
+    text-align:center;
+    padding:100px 20px;
+    color:var(--text-muted);
+    font-family:var(--font-mono);
+    font-size:14px;
+  }
+  .empty-state .big-icon{
+    font-size:48px;
+    margin-bottom:16px;
+    opacity:0.4;
+  }
 
-        .btn-download:hover {
-            background: var(--accent-green);
-            color: #000;
-            box-shadow: var(--shadow-glow-green);
-            transform: translateY(-1px);
-        }
+  .error-box{
+    margin:24px;
+    padding:20px;
+    border:1px solid var(--danger);
+    background:rgba(255,71,87,0.06);
+    border-radius:12px;
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--danger);
+    line-height:1.7;
+  }
 
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--text-dim);
-            font-family: var(--mono);
-            font-size: 1rem;
-        }
+  /* ── Counter animation ── */
+  .counter-anim{
+    display:inline-block;
+    animation:countPop 0.4s ease;
+  }
+  @keyframes countPop{
+    0%{transform:scale(1.4);}
+    100%{transform:scale(1);}
+  }
 
-        .error-box {
-            background: #2d0f0f;
-            border: 1px solid #ff5555;
-            color: #ffaaaa;
-            padding: 20px;
-            border-radius: 8px;
-            font-family: var(--mono);
-            margin: 30px;
-        }
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar{width:6px; height:6px;}
+  ::-webkit-scrollbar-track{background:var(--bg-deep);}
+  ::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--border-light);}
 
-        @media (max-width: 768px) {
-            .app-container {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                padding: 12px;
-            }
-            .year-list {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-            }
-            .year-item {
-                padding: 8px 14px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+  /* ── Responsive ── */
+  @media (max-width:900px){
+    .layout{flex-direction:column;}
+    .sidebar{
+      width:100%;
+      height:auto;
+      position:relative;
+      border-left:none;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      padding:14px;
+    }
+    .sidebar-title{width:100%;}
+    .year-item{flex:1; min-width:100px;}
+    .month-list{max-height:none !important;}
+    .month-item{display:inline-block; padding:6px 10px; margin:2px; border-radius:6px;}
+    .month-item::before{display:none;}
+    .sheet-grid{grid-template-columns:1fr;}
+  }
+
+  @media (max-width:560px){
+    .top-bar{padding:16px 18px;}
+    .main-area{padding:18px;}
+    .brand h1{font-size:20px;}
+    .brand .subtitle{font-size:12px;}
+  }
+</style>
+<base target="_blank">
 </head>
 <body>
-    <header class="top-bar">
-        <div class="title-section">
-            <h1>Previous Daaks Record of Tehsil Karor</h1>
-            <div class="sub">( By Muhammad Waqas Assistant Education Officer Fateh Pur )</div>
-        </div>
-        <div class="stats">
-            <span style="display:flex;align-items:center;">
-                <span class="live-dot"></span> Live
-            </span>
-            <div class="total-sheets-badge" id="totalSheetsBadge">📄 0 sheets</div>
-        </div>
-    </header>
 
-    <div class="app-container">
-        <aside class="sidebar">
-            <h3>📅 Years</h3>
-            <ul class="year-list" id="yearList"></ul>
-        </aside>
-        <main class="main-content" id="mainContent">
-            <div class="search-container">
-                <input type="text" class="search-input" id="searchBox" placeholder="🔍 Search sheets by name…" />
-            </div>
-            <div id="displayArea">
-                <div class="empty-state">Select a year from the sidebar to view months and sheets.</div>
-            </div>
-        </main>
+<!-- Header -->
+<div class="top-bar">
+  <div class="brand">
+    <h1>Previous Daaks Record</h1>
+    <div class="subtitle">Tehsil <strong>Karor</strong> &nbsp;|&nbsp; By Muhammad Waqas, Assistant Education Officer Fateh Pur</div>
+  </div>
+  <div class="header-right">
+    <div class="live-clock" id="liveClock">--:--:--</div>
+    <div class="total-badge" id="totalBadge">
+      <span>Total Sheets</span>
+      <span class="num" id="totalNum">0</span>
     </div>
+    <button class="ctrl-btn" id="refreshBtn">↻ Refresh</button>
+  </div>
+</div>
 
-    <script>
-        const MONTH_NAMES = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ];
+<!-- Controls -->
+<div class="controls-bar">
+  <div class="search-wrap">
+    <input type="text" id="searchBox" placeholder="Search sheets by name…" autocomplete="off">
+  </div>
+  <button class="ctrl-btn" id="clearFilters">Clear Filters</button>
+</div>
 
-        let ALL_SHEETS = [];
-        let selectedYear = null;
+<!-- Layout -->
+<div class="layout">
+  <div class="main-area" id="mainArea">
+    <div class="spinner-wrap" id="spinner">
+      <div class="spinner"></div>
+      <div class="spinner-text">Loading data.json…</div>
+    </div>
+  </div>
 
-        // Fetch data.json
-        async function loadData() {
-            try {
-                const res = await fetch('data.json', { cache: 'no-store' });
-                if (!res.ok) throw new Error('data.json not found (HTTP ' + res.status + ')');
-                const data = await res.json();
-                ALL_SHEETS = data.sheets || [];
-                document.getElementById('totalSheetsBadge').innerHTML =
-                    `📄 ${ALL_SHEETS.length} sheet${ALL_SHEETS.length !== 1 ? 's' : ''}`;
-                buildYearSidebar();
-                // If a year was previously selected, refresh display
-                if (selectedYear) {
-                    renderMonthsForYear(selectedYear);
-                }
-            } catch (e) {
-                document.getElementById('displayArea').innerHTML =
-                    `<div class="error-box">Could not load <code>data.json</code>.<br><br>
-                     Error: ${e.message}</div>`;
-            }
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-title">Filter by Year</div>
+    <div id="yearList"></div>
+  </aside>
+</div>
+
+<script>
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+let ALL_SHEETS = [];
+let DATA = null;
+let activeYear = null;
+let activeMonth = null;
+let searchQuery = '';
+
+/* ── Clock ── */
+function updateClock(){
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  const dateStr = now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('liveClock').textContent = `${dateStr}  ${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ── Load data ── */
+async function loadData(){
+  const main = document.getElementById('mainArea');
+  main.innerHTML = `
+    <div class="spinner-wrap">
+      <div class="spinner"></div>
+      <div class="spinner-text">Loading data.json…</div>
+    </div>`;
+
+  try{
+    const res = await fetch('data.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    DATA = await res.json();
+    ALL_SHEETS = (DATA.sheets || []).map(s => ({...s}));
+    animateCounter('totalNum', ALL_SHEETS.length);
+    buildSidebar();
+    render();
+  } catch(e){
+    main.innerHTML = `
+      <div class="error-box">
+        <strong>Could not load data.json</strong><br><br>
+        Make sure the file exists at the repo root and the Apps Script trigger has run at least once.<br>
+        Error: ${escapeHtml(e.message)}
+      </div>`;
+  }
+}
+
+/* ── Counter animation ── */
+function animateCounter(id, target){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const start = parseInt(el.textContent) || 0;
+  const duration = 600;
+  const startTime = performance.now();
+  function step(now){
+    const progress = Math.min((now - startTime) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (target - start) * ease);
+    el.textContent = current;
+    el.classList.add('counter-anim');
+    if(progress < 1) requestAnimationFrame(step);
+    else setTimeout(()=>el.classList.remove('counter-anim'), 400);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ── Sidebar builder ── */
+function buildSidebar(){
+  const container = document.getElementById('yearList');
+  container.innerHTML = '';
+
+  const yearMap = {};
+  ALL_SHEETS.forEach(s => {
+    yearMap[s.year] = yearMap[s.year] || new Set();
+    yearMap[s.year].add(s.month);
+  });
+
+  const years = Object.keys(yearMap).sort((a,b) => b - a);
+
+  if(years.length === 0){
+    container.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:8px;">No data</div>';
+    return;
+  }
+
+  years.forEach(year => {
+    const months = [...yearMap[year]].sort((a,b) => a - b);
+    const yearSheets = ALL_SHEETS.filter(s => String(s.year) === year);
+
+    const item = document.createElement('div');
+    item.className = 'year-item' + (activeYear === year ? ' active' : '');
+    item.dataset.year = year;
+
+    const header = document.createElement('div');
+    header.className = 'year-header';
+    header.innerHTML = `
+      <span>${year}</span>
+      <span class="year-count">${yearSheets.length}</span>
+      <span class="year-chevron">▸</span>
+    `;
+
+    const monthList = document.createElement('div');
+    monthList.className = 'month-list';
+
+    months.forEach(m => {
+      const monthSheets = ALL_SHEETS.filter(s => s.year == year && s.month == m);
+      const mi = document.createElement('div');
+      mi.className = 'month-item' + (activeYear === year && activeMonth === String(m) ? ' active' : '');
+      mi.textContent = `${MONTH_NAMES[m-1]} (${monthSheets.length})`;
+      mi.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if(activeYear === year && activeMonth === String(m)){
+          activeYear = null;
+          activeMonth = null;
+        } else {
+          activeYear = year;
+          activeMonth = String(m);
         }
+        buildSidebar();
+        render();
+      });
+      monthList.appendChild(mi);
+    });
 
-        function buildYearSidebar() {
-            const years = [...new Set(ALL_SHEETS.map(s => s.year))].sort((a, b) => b - a);
-            const ul = document.getElementById('yearList');
-            ul.innerHTML = '';
-            years.forEach(y => {
-                const li = document.createElement('li');
-                li.className = 'year-item' + (selectedYear === y ? ' active' : '');
-                li.textContent = y;
-                li.addEventListener('click', () => {
-                    selectedYear = y;
-                    // update active class
-                    document.querySelectorAll('.year-item').forEach(el => el.classList.remove('active'));
-                    li.classList.add('active');
-                    renderMonthsForYear(y);
-                    document.getElementById('searchBox').value = '';
-                });
-                ul.appendChild(li);
-            });
-        }
+    header.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.year-item').forEach(y => y.classList.remove('open'));
+      if(!isOpen) item.classList.add('open');
+    });
 
-        function getFilteredForYear(year) {
-            const query = document.getElementById('searchBox').value.trim().toLowerCase();
-            return ALL_SHEETS.filter(s => {
-                if (s.year !== year) return false;
-                if (query && !s.name.toLowerCase().includes(query)) return false;
-                return true;
-            });
-        }
+    item.appendChild(header);
+    item.appendChild(monthList);
+    container.appendChild(item);
+  });
+}
 
-        function groupByMonth(sheets) {
-            const map = {};
-            sheets.forEach(s => {
-                if (!map[s.month]) map[s.month] = [];
-                map[s.month].push(s);
-            });
-            // sort months numerically (ascending)
-            const sortedMonths = Object.keys(map).map(Number).sort((a, b) => a - b);
-            // alphabetically sort sheets within each month
-            for (let m in map) {
-                map[m].sort((a, b) => a.name.localeCompare(b.name));
-            }
-            return { map, sortedMonths };
-        }
+/* ── Filter logic ── */
+function getFiltered(){
+  const q = searchQuery.trim().toLowerCase();
+  return ALL_SHEETS.filter(s => {
+    if(q && !s.name.toLowerCase().includes(q)) return false;
+    if(activeYear && String(s.year) !== activeYear) return false;
+    if(activeMonth && String(s.month) !== activeMonth) return false;
+    return true;
+  });
+}
 
-        function exportUrl(id) {
-            return `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`;
-        }
+/* ── Group & sort ── */
+function groupData(sheets){
+  const byYear = {};
+  sheets.forEach(s => {
+    byYear[s.year] = byYear[s.year] || {};
+    byYear[s.year][s.month] = byYear[s.year][s.month] || {};
+    byYear[s.year][s.month][s.day] = byYear[s.year][s.month][s.day] || [];
+    byYear[s.year][s.month][s.day].push(s);
+  });
+  // Sort sheets within each day A-Z by name
+  Object.values(byYear).forEach(byMonth => {
+    Object.values(byMonth).forEach(byDay => {
+      Object.values(byDay).forEach(list => {
+        list.sort((a,b) => a.name.localeCompare(b.name, undefined, {sensitivity:'base'}));
+      });
+    });
+  });
+  return byYear;
+}
 
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
+function exportUrl(id){
+  return `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`;
+}
 
-        function renderMonthsForYear(year) {
-            const sheets = getFilteredForYear(year);
-            const displayArea = document.getElementById('displayArea');
-            if (sheets.length === 0) {
-                displayArea.innerHTML =
-                    `<div class="empty-state">No sheets found for ${year}${document.getElementById('searchBox').value ? ' matching search' : ''}.</div>`;
-                return;
-            }
+/* ── Download single sheet ── */
+async function downloadSheet(sheet, btn){
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-block;width:10px;height:10px;border:2px solid var(--neon);border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;"></span>';
+  try{
+    const resp = await fetch(exportUrl(sheet.id));
+    const blob = await resp.blob();
+    const safeName = sheet.name.replace(/[\\/:*?"<>|]/g, '_');
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${safeName}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch(e){
+    console.error('Download failed', e);
+    btn.textContent = 'Failed';
+    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1500);
+    return;
+  }
+  btn.innerHTML = '✓ Done';
+  setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1200);
+}
 
-            const { map, sortedMonths } = groupByMonth(sheets);
-            let html = '';
-            sortedMonths.forEach(month => {
-                const monthSheets = map[month];
-                const monthName = MONTH_NAMES[month - 1];
-                html += `
-                <div class="month-block">
-                    <div class="month-head" data-month="${month}">
-                        <div class="month-name">
-                            <span class="toggle-icon">▾</span> ${monthName}
-                        </div>
-                        <span class="sheet-count">${monthSheets.length} sheet${monthSheets.length !== 1 ? 's' : ''}</span>
-                    </div>
-                    <div class="month-body">
-                        ${monthSheets.map(s => `
-                            <div class="sheet-row">
-                                <div class="sheet-info">
-                                    <div class="sheet-name">${escapeHtml(s.name)}</div>
-                                    <div class="sheet-path">${escapeHtml(s.path)}</div>
-                                </div>
-                                <div class="sheet-actions">
-                                    <a href="${s.url}" target="_blank" class="neon-btn btn-open">📂 Open</a>
-                                    <a href="${exportUrl(s.id)}" download class="neon-btn btn-download">⬇ Download</a>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-            });
-            displayArea.innerHTML = html;
+/* ── Render ── */
+function render(){
+  const sheets = getFiltered();
+  const main = document.getElementById('mainArea');
 
-            // attach collapse toggle
-            document.querySelectorAll('.month-head').forEach(head => {
-                head.addEventListener('click', function() {
-                    this.classList.toggle('collapsed');
-                    const body = this.nextElementSibling;
-                    if (body) body.classList.toggle('collapsed');
-                });
-            });
-        }
+  if(sheets.length === 0){
+    main.innerHTML = `
+      <div class="empty-state">
+        <div class="big-icon">📂</div>
+        <div>No sheets match your filters.</div>
+      </div>`;
+    return;
+  }
 
-        // Search handler
-        document.getElementById('searchBox').addEventListener('input', function() {
-            if (selectedYear) {
-                renderMonthsForYear(selectedYear);
-            }
+  const byYear = groupData(sheets);
+  const years = Object.keys(byYear).sort((a,b) => b - a);
+
+  let html = '';
+  let animDelay = 0;
+
+  years.forEach(year => {
+    const yearSheets = Object.values(byYear[year]).flatMap(m => Object.values(m).flat());
+    const months = Object.keys(byYear[year]).sort((a,b) => b - a);
+
+    html += `<div class="year-section" style="animation-delay:${animDelay}s">`;
+    html += `<div class="year-label"><span class="glow-num">${year}</span><span class="count-pill">${yearSheets.length} sheet${yearSheets.length===1?'':'s'}</span></div>`;
+
+    months.forEach(month => {
+      const monthSheets = Object.values(byYear[year][month]).flat();
+      const days = Object.keys(byYear[year][month]).sort((a,b) => b - a);
+
+      html += `<div class="month-section">`;
+      html += `<div class="month-label">${MONTH_NAMES[month-1]} <span style="color:var(--text-muted);font-size:11px;margin-left:6px;">(${monthSheets.length})</span></div>`;
+
+      days.forEach(day => {
+        const daySheets = byYear[year][month][day];
+        html += `<div class="day-section">`;
+        html += `<div class="day-label">${MONTH_NAMES[month-1]} ${day}, ${year} — ${daySheets.length} sheet${daySheets.length===1?'':'s'}</div>`;
+        html += `<div class="sheet-grid">`;
+
+        daySheets.forEach(s => {
+          html += `
+            <div class="sheet-card">
+              <div class="sheet-icon">📊</div>
+              <div class="sheet-name">${escapeHtml(s.name)}</div>
+              <div class="sheet-path">${escapeHtml(s.path || '')}</div>
+              <div class="sheet-actions">
+                <a href="${s.url}" target="_blank" class="btn-neon btn-open">🔗 Open Sheet</a>
+                <button class="btn-neon btn-dl" onclick="window._dlSheet(this,'${escapeHtml(s.id)}','${escapeHtml(s.name)}')">⬇ Download</button>
+              </div>
+            </div>`;
         });
 
-        // Initial load
-        loadData();
+        html += `</div></div>`;
+      });
 
-        // Live refresh every 5 minutes
-        setInterval(() => {
-            loadData();
-        }, 300000);
+      html += `</div>`;
+    });
 
-        // Simulate live feeling: update time
-        function updateLiveTime() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const liveElem = document.querySelector('.stats span:first-child');
-            if (liveElem) liveElem.innerHTML = `<span class="live-dot"></span> Live • ${timeStr}`;
-        }
-        setInterval(updateLiveTime, 1000);
-        updateLiveTime();
-    </script>
+    html += `</div>`;
+    animDelay += 0.08;
+  });
+
+  main.innerHTML = html;
+}
+
+/* ── Global download handler (attached to window for inline onclick) ── */
+window._dlSheet = function(btn, id, name){
+  downloadSheet({id:id, name:name}, btn);
+};
+
+function escapeHtml(str){
+  if(!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ── Event listeners ── */
+document.getElementById('searchBox').addEventListener('input', (e) => {
+  searchQuery = e.target.value;
+  render();
+});
+
+document.getElementById('clearFilters').addEventListener('click', () => {
+  searchQuery = '';
+  activeYear = null;
+  activeMonth = null;
+  document.getElementById('searchBox').value = '';
+  buildSidebar();
+  render();
+});
+
+document.getElementById('refreshBtn').addEventListener('click', loadData);
+
+/* ── Init ── */
+loadData();
+</script>
 </body>
 </html>
