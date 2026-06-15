@@ -7,7 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
+  
   :root{
     --bg-deep: #0a0e12;
     --bg-card: #111820;
@@ -28,9 +28,8 @@
   }
 
   *{box-sizing:border-box; margin:0; padding:0;}
-
   html{scroll-behavior:smooth;}
-
+  
   body{
     font-family:var(--font-main);
     background:var(--bg-deep);
@@ -40,7 +39,6 @@
     overflow-x:hidden;
   }
 
-  /* ── Animated background grid ── */
   body::before{
     content:'';
     position:fixed;
@@ -53,7 +51,6 @@
     z-index:0;
   }
 
-  /* ── Header ── */
   .top-bar{
     position:relative;
     z-index:10;
@@ -140,12 +137,7 @@
     min-width:24px;
     text-align:center;
   }
-  .total-badge:hover{
-    border-color:var(--neon);
-    box-shadow:0 0 12px var(--neon-glow);
-  }
 
-  /* ── Controls bar ── */
   .controls-bar{
     position:relative;
     z-index:10;
@@ -204,15 +196,17 @@
     align-items:center;
     gap:6px;
   }
-  .ctrl-btn:hover{
+  .ctrl-btn:hover:not(:disabled){
     border-color:var(--neon);
     color:var(--neon);
     box-shadow:0 0 12px var(--neon-glow);
     transform:translateY(-1px);
   }
-  .ctrl-btn:active{transform:translateY(0);}
+  .ctrl-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
-  /* ── Layout: main + sidebar ── */
   .layout{
     display:flex;
     gap:0;
@@ -227,7 +221,6 @@
     min-width:0;
   }
 
-  /* ── Right sidebar ── */
   .sidebar{
     width:220px;
     background:var(--bg-card);
@@ -240,8 +233,6 @@
     scrollbar-width:thin;
     scrollbar-color:var(--border) transparent;
   }
-  .sidebar::-webkit-scrollbar{width:5px;}
-  .sidebar::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
 
   .sidebar-title{
     font-size:11px;
@@ -261,7 +252,6 @@
     border:1px solid transparent;
     transition:all 0.2s ease;
   }
-  .year-item:hover{border-color:var(--border-light);}
   .year-item.active{border-color:var(--neon); background:rgba(57,255,20,0.05);}
 
   .year-header{
@@ -275,10 +265,7 @@
     font-size:13px;
     font-weight:600;
     color:var(--text-main);
-    transition:color 0.2s;
   }
-  .year-item.active .year-header{color:var(--neon);}
-  .year-header:hover{color:var(--neon);}
 
   .year-chevron{
     font-size:10px;
@@ -286,8 +273,7 @@
     transition:transform 0.25s ease;
   }
   .year-item.open .year-chevron{transform:rotate(90deg);}
-  .year-item.active .year-chevron{color:var(--neon);}
-
+  
   .year-count{
     font-size:10px;
     color:var(--text-muted);
@@ -326,49 +312,14 @@
     height:4px;
     background:var(--text-muted);
     border-radius:50%;
-    transition:all 0.2s;
   }
-  .month-item:hover{
-    color:var(--neon);
-    background:rgba(57,255,20,0.06);
-  }
-  .month-item:hover::before{
-    background:var(--neon);
-    box-shadow:0 0 6px var(--neon);
-  }
-  .month-item.active{
+  .month-item:hover, .month-item.active{
     color:var(--neon);
     background:rgba(57,255,20,0.08);
   }
-  .month-item.active::before{
+  .month-item:hover::before, .month-item.active::before{
     background:var(--neon);
     box-shadow:0 0 6px var(--neon);
-  }
-
-  /* ── Content blocks ── */
-  .content-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:20px;
-    flex-wrap:wrap;
-    gap:10px;
-  }
-  .content-title{
-    font-size:18px;
-    font-weight:700;
-    color:var(--text-main);
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .content-title .accent-line{
-    display:inline-block;
-    width:4px;
-    height:22px;
-    background:var(--neon);
-    border-radius:2px;
-    box-shadow:0 0 8px var(--neon-glow);
   }
 
   .year-section{
@@ -433,7 +384,6 @@
     margin-bottom:16px;
     padding-left:14px;
   }
-
   .day-label{
     font-family:var(--font-mono);
     font-size:12px;
@@ -443,18 +393,13 @@
     border-bottom:1px dashed var(--border);
   }
 
-  /* ── Sheet cards ── 3 columns fixed for search results ── */
   .sheet-grid{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
     gap:14px;
   }
-  @media (max-width:1100px){
-    .sheet-grid{grid-template-columns:repeat(2, 1fr);}
-  }
-  @media (max-width:700px){
-    .sheet-grid{grid-template-columns:1fr;}
-  }
+  @media (max-width:1100px){ .sheet-grid{grid-template-columns:repeat(2, 1fr);} }
+  @media (max-width:700px){ .sheet-grid{grid-template-columns:1fr;} }
 
   .sheet-card{
     background:var(--bg-card);
@@ -509,10 +454,7 @@
     line-height:1.4;
   }
 
-  .sheet-actions{
-    display:flex;
-    gap:8px;
-  }
+  .sheet-actions{ display:flex; gap:8px; }
 
   .btn-neon{
     flex:1;
@@ -548,19 +490,12 @@
     color:var(--neon);
     border:1px solid rgba(57,255,20,0.3);
   }
-  .btn-dl:hover{
+  .btn-dl:hover:not(:disabled){
     background:rgba(57,255,20,0.18);
     box-shadow:0 0 16px var(--neon-glow);
     transform:translateY(-1px);
   }
 
-  .btn-dl:disabled{
-    opacity:0.5;
-    cursor:not-allowed;
-    transform:none;
-  }
-
-  /* ── Loading spinner ── */
   .spinner-wrap{
     display:flex;
     flex-direction:column;
@@ -578,6 +513,7 @@
     box-shadow:0 0 20px var(--neon-glow);
   }
   @keyframes spin{to{transform:rotate(360deg);}}
+  
   .spinner-text{
     font-family:var(--font-mono);
     font-size:13px;
@@ -589,7 +525,6 @@
     50%{opacity:1;}
   }
 
-  /* ── Empty / Error ── */
   .empty-state{
     text-align:center;
     padding:100px 20px;
@@ -615,7 +550,6 @@
     line-height:1.7;
   }
 
-  /* ── Counter animation ── */
   .counter-anim{
     display:inline-block;
     animation:countPop 0.4s ease;
@@ -625,13 +559,10 @@
     100%{transform:scale(1);}
   }
 
-  /* ── Scrollbar ── */
   ::-webkit-scrollbar{width:6px; height:6px;}
   ::-webkit-scrollbar-track{background:var(--bg-deep);}
   ::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
-  ::-webkit-scrollbar-thumb:hover{background:var(--border-light);}
 
-  /* ── Responsive ── */
   @media (max-width:900px){
     .layout{flex-direction:column;}
     .sidebar{
@@ -655,15 +586,12 @@
   @media (max-width:560px){
     .top-bar{padding:16px 18px;}
     .main-area{padding:18px;}
-    .brand h1{font-size:20px;}
-    .brand .subtitle{font-size:12px;}
   }
 </style>
 <base target="_blank">
 </head>
 <body>
 
-<!-- Header -->
 <div class="top-bar">
   <div class="brand">
     <h1>Previous Daaks Record</h1>
@@ -675,11 +603,10 @@
       <span>Total Sheets</span>
       <span class="num" id="totalNum">0</span>
     </div>
-    <button class="ctrl-btn" id="refreshBtn">↻ Refresh</button>
+    <button class="ctrl-btn" id="refreshBtn">↻ Live Refresh</button>
   </div>
 </div>
 
-<!-- Controls -->
 <div class="controls-bar">
   <div class="search-wrap">
     <input type="text" id="searchBox" placeholder="Search sheets by name…" autocomplete="off">
@@ -687,12 +614,11 @@
   <button class="ctrl-btn" id="clearFilters">Clear Filters</button>
 </div>
 
-<!-- Layout -->
 <div class="layout">
   <div class="main-area" id="mainArea">
     <div class="spinner-wrap" id="spinner">
       <div class="spinner"></div>
-      <div class="spinner-text">Loading data.json…</div>
+      <div class="spinner-text">Loading Data…</div>
     </div>
   </div>
 
@@ -703,16 +629,19 @@
 </div>
 
 <script>
-const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+// ==========================================
+// PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyEulFdfjIRU8SeFXiqMjn8lRd8Us-ntHGf3_MHbxZRMNvUg6Yg-uY5bS0DUotqfsbV/exec"; 
+// ==========================================
 
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 let ALL_SHEETS = [];
 let DATA = null;
 let activeYear = null;
 let activeMonth = null;
 let searchQuery = '';
-let openYears = new Set(); // track which years are expanded
+let openYears = new Set(); 
 
-/* ── Clock ── */
 function updateClock(){
   const now = new Date();
   const h = String(now.getHours()).padStart(2,'0');
@@ -724,34 +653,58 @@ function updateClock(){
 setInterval(updateClock, 1000);
 updateClock();
 
-/* ── Load data ── */
-async function loadData(){
-  const main = document.getElementById('mainArea');
-  main.innerHTML = `
-    <div class="spinner-wrap">
-      <div class="spinner"></div>
-      <div class="spinner-text">Loading data.json…</div>
-    </div>`;
-
-  try{
-    const res = await fetch('data.json', {cache:'no-store'});
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    DATA = await res.json();
+// Helper to update the UI with new data
+function processLoadedData() {
     ALL_SHEETS = (DATA.sheets || []).map(s => ({...s}));
     animateCounter('totalNum', ALL_SHEETS.length);
     buildSidebar();
     render();
+}
+
+// 1. Initial Fast Load from GitHub Cache
+async function loadData(){
+  const main = document.getElementById('mainArea');
+  try{
+    const res = await fetch('data.json?t=' + new Date().getTime(), {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    DATA = await res.json();
+    processLoadedData();
   } catch(e){
-    main.innerHTML = `
-      <div class="error-box">
-        <strong>Could not load data.json</strong><br><br>
-        Make sure the file exists at the repo root and the Apps Script trigger has run at least once.<br>
-        Error: ${escapeHtml(e.message)}
-      </div>`;
+    main.innerHTML = `<div class="error-box"><strong>Could not load data.json</strong><br><br>Error: ${escapeHtml(e.message)}</div>`;
   }
 }
 
-/* ── Counter animation ── */
+// 2. LIVE REFRESH directly from Google Drive
+async function liveRefresh() {
+  if (WEB_APP_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+    alert("Please add your Web App URL to the JavaScript code!");
+    return;
+  }
+
+  const btn = document.getElementById('refreshBtn');
+  const main = document.getElementById('mainArea');
+  
+  btn.innerHTML = '↻ Scanning Drive...';
+  btn.disabled = true;
+  main.innerHTML = `
+    <div class="spinner-wrap">
+      <div class="spinner"></div>
+      <div class="spinner-text">Scanning Google Drive for updates...</div>
+    </div>`;
+
+  try {
+    const res = await fetch(WEB_APP_URL);
+    if(!res.ok) throw new Error('Failed to connect to Google Drive');
+    DATA = await res.json();
+    processLoadedData();
+  } catch (e) {
+    main.innerHTML = `<div class="error-box"><strong>Live Scan Failed</strong><br><br>Error: ${escapeHtml(e.message)}</div>`;
+  } finally {
+    btn.innerHTML = '↻ Live Refresh';
+    btn.disabled = false;
+  }
+}
+
 function animateCounter(id, target){
   const el = document.getElementById(id);
   if(!el) return;
@@ -770,17 +723,14 @@ function animateCounter(id, target){
   requestAnimationFrame(step);
 }
 
-/* ── Sidebar builder ── */
 function buildSidebar(){
   const container = document.getElementById('yearList');
   container.innerHTML = '';
-
   const yearMap = {};
   ALL_SHEETS.forEach(s => {
     yearMap[s.year] = yearMap[s.year] || new Set();
     yearMap[s.year].add(s.month);
   });
-
   const years = Object.keys(yearMap).sort((a,b) => b - a);
 
   if(years.length === 0){
@@ -800,11 +750,7 @@ function buildSidebar(){
 
     const header = document.createElement('div');
     header.className = 'year-header';
-    header.innerHTML = `
-      <span>${year}</span>
-      <span class="year-count">${yearSheets.length}</span>
-      <span class="year-chevron">▸</span>
-    `;
+    header.innerHTML = `<span>${year}</span><span class="year-count">${yearSheets.length}</span><span class="year-chevron">▸</span>`;
 
     const monthList = document.createElement('div');
     monthList.className = 'month-list';
@@ -817,36 +763,25 @@ function buildSidebar(){
       mi.addEventListener('click', (e) => {
         e.stopPropagation();
         if(activeYear === year && activeMonth === String(m)){
-          activeYear = null;
-          activeMonth = null;
+          activeYear = null; activeMonth = null;
         } else {
-          activeYear = year;
-          activeMonth = String(m);
-          // keep year open when selecting a month
+          activeYear = year; activeMonth = String(m);
           openYears.add(year);
         }
-        buildSidebar();
-        render();
+        buildSidebar(); render();
       });
       monthList.appendChild(mi);
     });
 
     header.addEventListener('click', () => {
-      if(openYears.has(year)){
-        openYears.delete(year);
-      } else {
-        openYears.add(year);
-      }
+      if(openYears.has(year)) openYears.delete(year);
+      else openYears.add(year);
       buildSidebar();
     });
-
-    item.appendChild(header);
-    item.appendChild(monthList);
-    container.appendChild(item);
+    item.appendChild(header); item.appendChild(monthList); container.appendChild(item);
   });
 }
 
-/* ── Filter logic ── */
 function getFiltered(){
   const q = searchQuery.trim().toLowerCase();
   return ALL_SHEETS.filter(s => {
@@ -857,7 +792,6 @@ function getFiltered(){
   });
 }
 
-/* ── Group & sort ── */
 function groupData(sheets){
   const byYear = {};
   sheets.forEach(s => {
@@ -866,22 +800,16 @@ function groupData(sheets){
     byYear[s.year][s.month][s.day] = byYear[s.year][s.month][s.day] || [];
     byYear[s.year][s.month][s.day].push(s);
   });
-  // Sort sheets within each day A-Z by name
   Object.values(byYear).forEach(byMonth => {
     Object.values(byMonth).forEach(byDay => {
-      Object.values(byDay).forEach(list => {
-        list.sort((a,b) => a.name.localeCompare(b.name, undefined, {sensitivity:'base'}));
-      });
+      Object.values(byDay).forEach(list => list.sort((a,b) => a.name.localeCompare(b.name, undefined, {sensitivity:'base'})));
     });
   });
   return byYear;
 }
 
-function exportUrl(id){
-  return `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`;
-}
+function exportUrl(id){ return `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`; }
 
-/* ── Download single sheet ── */
 async function downloadSheet(sheet, btn){
   const orig = btn.innerHTML;
   btn.disabled = true;
@@ -892,41 +820,27 @@ async function downloadSheet(sheet, btn){
     const safeName = sheet.name.replace(/[\\/:*?"<>|]/g, '_');
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `${safeName}.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    a.href = url; a.download = `${safeName}.xlsx`;
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   } catch(e){
-    console.error('Download failed', e);
     btn.textContent = 'Failed';
-    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1500);
-    return;
+    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1500); return;
   }
-  btn.innerHTML = '✓ Done';
-  setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1200);
+  btn.innerHTML = '✓ Done'; setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1200);
 }
 
-/* ── Render ── */
 function render(){
   const sheets = getFiltered();
   const main = document.getElementById('mainArea');
 
   if(sheets.length === 0){
-    main.innerHTML = `
-      <div class="empty-state">
-        <div class="big-icon">📂</div>
-        <div>No sheets match your filters.</div>
-      </div>`;
+    main.innerHTML = `<div class="empty-state"><div class="big-icon">📂</div><div>No sheets match your filters.</div></div>`;
     return;
   }
 
   const byYear = groupData(sheets);
   const years = Object.keys(byYear).sort((a,b) => b - a);
-
-  let html = '';
-  let animDelay = 0;
+  let html = ''; let animDelay = 0;
 
   years.forEach(year => {
     const yearSheets = Object.values(byYear[year]).flatMap(m => Object.values(m).flat());
@@ -960,51 +874,30 @@ function render(){
               </div>
             </div>`;
         });
-
         html += `</div></div>`;
       });
-
       html += `</div>`;
     });
-
-    html += `</div>`;
-    animDelay += 0.08;
+    html += `</div>`; animDelay += 0.08;
   });
-
   main.innerHTML = html;
 }
 
-/* ── Global download handler (attached to window for inline onclick) ── */
-window._dlSheet = function(btn, id, name){
-  downloadSheet({id:id, name:name}, btn);
-};
-
+window._dlSheet = function(btn, id, name){ downloadSheet({id:id, name:name}, btn); };
 function escapeHtml(str){
   if(!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+  const div = document.createElement('div'); div.textContent = str; return div.innerHTML;
 }
 
-/* ── Event listeners ── */
-document.getElementById('searchBox').addEventListener('input', (e) => {
-  searchQuery = e.target.value;
-  render();
-});
-
+document.getElementById('searchBox').addEventListener('input', (e) => { searchQuery = e.target.value; render(); });
 document.getElementById('clearFilters').addEventListener('click', () => {
-  searchQuery = '';
-  activeYear = null;
-  activeMonth = null;
-  openYears.clear();
-  document.getElementById('searchBox').value = '';
-  buildSidebar();
-  render();
+  searchQuery = ''; activeYear = null; activeMonth = null; openYears.clear();
+  document.getElementById('searchBox').value = ''; buildSidebar(); render();
 });
 
-document.getElementById('refreshBtn').addEventListener('click', loadData);
+// Attach Live Refresh function
+document.getElementById('refreshBtn').addEventListener('click', liveRefresh);
 
-/* ── Init ── */
 loadData();
 </script>
 </body>
