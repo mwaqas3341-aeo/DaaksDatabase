@@ -1,8 +1,18 @@
 {
-  "generatedAt": "2026-06-30T15:02:11.595Z",
+  "generatedAt": "2026-06-30T16:02:05.751Z",
   "rootFolderName": "Complete Tehsil Karor Daaks",
-  "count": 129,
+  "count": 130,
   "sheets": [
+    {
+      "id": "1QOEe6DIlfeXwMC81cBu3A1SQkvz9N_-2lh5WpGPBPT4",
+      "name": "Electricity Bills Details ",
+      "path": "Complete Tehsil Karor Daaks/GENERAL",
+      "url": "https://docs.google.com/spreadsheets/d/1QOEe6DIlfeXwMC81cBu3A1SQkvz9N_-2lh5WpGPBPT4/edit?usp=drivesdk",
+      "createdISO": "2026-06-30T15:53:43.371Z",
+      "year": 2026,
+      "month": 6,
+      "day": 30
+    },
     {
       "id": "1ONo-EqusFRiI-uuuK4NtD1ElTkfjz3vg02H15Yj0SIs",
       "name": "Land Data with DC rates and Mutation Nos.",
