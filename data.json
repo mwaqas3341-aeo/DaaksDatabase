@@ -1,8 +1,18 @@
 {
-  "generatedAt": "2026-07-18T02:03:36.779Z",
+  "generatedAt": "2026-07-18T03:01:47.998Z",
   "rootFolderName": "Complete Tehsil Karor Daaks",
-  "count": 133,
+  "count": 134,
   "sheets": [
+    {
+      "id": "15Kt_XkgFUgQf1R8RfqOZG1H7LDyKKAwXyIJdhpJ3EZc",
+      "name": "NSB Balance As per 30 6 2026",
+      "path": "Complete Tehsil Karor Daaks",
+      "url": "https://docs.google.com/spreadsheets/d/15Kt_XkgFUgQf1R8RfqOZG1H7LDyKKAwXyIJdhpJ3EZc/edit?usp=drivesdk",
+      "createdISO": "2026-07-18T02:49:46.526Z",
+      "year": 2026,
+      "month": 7,
+      "day": 18
+    },
     {
       "id": "11gUFzpXNUHqt56ZdtM152SewHTC-pH6MCXIA3lnFyZk",
       "name": "IASP RECOVERIES DATA FOR FINAL VERIFICATION 10 7 2026",
