@@ -1,8 +1,18 @@
 {
-  "generatedAt": "2026-07-30T10:01:49.901Z",
+  "generatedAt": "2026-07-30T11:01:54.797Z",
   "rootFolderName": "Complete Tehsil Karor Daaks",
-  "count": 135,
+  "count": 136,
   "sheets": [
+    {
+      "id": "1zrY_QM1diPix7PkIADcZZYQOtIsUCrgdT6x-xC5_aZM",
+      "name": "Zebra crossing Daak Tehsil Karor Male",
+      "path": "Complete Tehsil Karor Daaks",
+      "url": "https://docs.google.com/spreadsheets/d/1zrY_QM1diPix7PkIADcZZYQOtIsUCrgdT6x-xC5_aZM/edit?usp=drivesdk",
+      "createdISO": "2026-07-30T10:54:37.336Z",
+      "year": 2026,
+      "month": 7,
+      "day": 30
+    },
     {
       "id": "1DWpz3iNs252PaMsjFInFkFPGSCQ1BYSwtcmEnkrzK_U",
       "name": "Vouched Account Summary 2025 26",
