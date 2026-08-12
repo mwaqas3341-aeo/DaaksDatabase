@@ -1,8 +1,18 @@
 {
-  "generatedAt": "2026-08-12T11:01:51.649Z",
+  "generatedAt": "2026-08-12T12:01:53.733Z",
   "rootFolderName": "Complete Tehsil Karor Daaks",
-  "count": 138,
+  "count": 139,
   "sheets": [
+    {
+      "id": "18o3rI6u4W5owBUCM5PneqYLIQxNoezIVhp0Bg62bKxY",
+      "name": "Acadmies Data Tehsil Karor",
+      "path": "Complete Tehsil Karor Daaks",
+      "url": "https://docs.google.com/spreadsheets/d/18o3rI6u4W5owBUCM5PneqYLIQxNoezIVhp0Bg62bKxY/edit?usp=drivesdk",
+      "createdISO": "2026-08-12T11:36:04.103Z",
+      "year": 2026,
+      "month": 8,
+      "day": 12
+    },
     {
       "id": "1u00FXhmUgk6i1x01ngm0tjCKcxiDAQ6RoO23EFjJblE",
       "name": "EDU Directorate Accounts NSB and FTF SMC",
